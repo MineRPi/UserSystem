@@ -38,18 +38,21 @@ Route::group(['prefix'=>'admin'],function(){
 
 
 //group路由群组，检验是否带Token['middleware' => ['auth.api'],
-Route::group(['prefix'=>'home'],function(){
+Route::group(['middleware' => ['auth.api'],'prefix'=>'home'],function(){
     //DB门面的增删改查
     Route::get('/del','Admin\DelController@del');
     Route::get('/update','Admin\UpdateController@update');
     //展示视图
     Route::get('/views','Admin\CrudController@views');
+    Route::get('/login_view','Admin\LoginController@login_view');
+    
 });
 
-Route::group(['middleware' => ['auth.api'],'prefix'=>'home'],function(){
-Route::get('/login_view','Admin\LoginController@login_view');
+Route::group(['prefix'=>'home'],function(){
+    
  });
 //用户注册登录系统
     Route::any('/login','Admin\LoginController@login');
 
     Route::get('/regist','Admin\LoginController@regist');
+    Route::get('/borntoken','Admin\LoginController@borntoken');

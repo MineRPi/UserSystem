@@ -4,6 +4,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use DB;
 
+
 class ApiToken
 {
  /**
@@ -17,17 +18,16 @@ class ApiToken
  {
     //定义关联操作的表
     $db = DB::table('users');
-    //使用md5加密产生token
-    $token = md5($_GET['email'].$_GET['password']).'hjl';
+    $str = $request->header('cookie');
+    $token=explode(";",$str)[0];
     //查找用户
-    $data=$db -> where('api_token',$token)-> get();
-    foreach ($data as $key => $value){
-        $datas=$value -> email;
-    };
+    $data=$db -> where('api_token',$token)-> first();
     //若查找不到，则返回信息
-    if ($data->isEmpty()) {
+    if (!$data) {
         return response()->json(['code' => 401,'msg' => 'wrong_token']);    
     };
+    //将查到的email附值给$datas变量
+    $datas=$data -> email;
     $mid_params = ['mid_params'=>$datas];
     $request->attributes->add($mid_params);
     //若查找成功，则继续
